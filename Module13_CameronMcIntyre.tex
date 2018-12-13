@@ -1,0 +1,151 @@
+\documentclass[svgnames]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\newtheorem{mydef}{Given}
+\newtheorem{mytheorem}{Theorem}
+\usepackage{enumitem}
+\usepackage{venndiagram}
+\usepackage{smartdiagram}
+\usepackage{caption}
+\usepackage{subcaption}
+%\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
+\usepackage{pgfplots}
+%\usepackage{tkiz}
+\usepackage{listings}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\usepackage{float}
+
+\lstset{ %
+  language=R,                     % the language of the code
+  basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                 % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{blue},      % keyword style
+  commentstyle=\color{dkgreen},   % comment style
+  stringstyle=\color{mauve},      % string literal style
+  escapeinside={\%*}{*)},         % if you want to add a comment within your code
+  morekeywords={*,...}            % if you want to add more keywords to the set
+} 
+
+
+%\renewcommand{\theenumi}{\Alph{enumi}}
+\newenvironment{amatrix}[1]{%
+  \left(\begin{array}{@{}*{#1}{c}|c@{}}
+}{%
+  \end{array}\right)
+}
+
+\newenvironment{tolerant}[1]{%
+  \par\tolerance=#1\relax
+}{%
+  \par
+}
+
+
+\pgfmathdeclarefunction{gauss}{2}{%
+  \pgfmathparse{1/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}%
+}
+
+
+\title{Statistical Methods: Homework 13}
+\author{Cameron McIntyre}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{13.3.2}
+ Recall the depth perception data described in Question 8.2.6. Use a paired t test with $\alpha = 0.05$ to compare the numbers of trials needed to learn depth perception for Mothered and Unmothered lambs.
+
+\subsection*{Answer:}
+
+WE USE A PAIRED 2 SIDED T TEST
+
+\begin{lstlisting}
+mothered = c(2,3,5,3,2,1,1,5,3,1,7,3,5)
+> mothered = c(2,3,5,3,2,1,1,5,3,1,7,3,5)
+> unmothered = c(3,11,10,5,5,4,2,7,5,4,8,12,7)
+> total = cbind(mothered, unmothered, mothered-unmothered)
+> 
+> t.test(mothered, unmothered, paired=TRUE, alternative = "two.sided")
+
+	Paired t-test
+
+data:  mothered and unmothered
+t = -4.5029, df = 12, p-value = 0.000723
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -4.794047 -1.667491
+sample estimates:
+mean of the differences 
+              -3.230769 
+\end{lstlisting}
+
+Since the p value is less than .025 $(0.000723<.025)$, We reject $H_0$ and conclude the difference are significant.
+
+\section{13.3.6}
+Let $D_1, D_2, ..., D_b$ be the within-block differences as defined in this section. 
+Assume that the $D_i$ are normal with $\mu_D$ and variance $\sigma_D^2$, for $i = 1, 2,..., b$ 
+Derive formula for $100(1-\alpha)$ confidence interval for $\mu_D$. 
+Apply this formula to the data of Case Study 13.3.1 and construct 
+a $95\%$ confidence interval for the true average hemoglobin difference (\" before walk \" and  \" after walk\").
+
+
+\subsection*{Answer:}
+$$P(-t_{\frac{\alpha}{2},n}<\frac{\bar{d}_i-\mu}{\frac{\sigma}{\sqrt{n}}}<t_{\frac{\alpha}{2},n})=1-\alpha$$
+$$P(-t_{\frac{\alpha}{2},n}<\frac{\bar{d}-\mu}{\frac{\sigma}{\sqrt{n}}}<t_{\frac{\alpha}{2},n})=1-\alpha$$
+$$P(-t_{\frac{\alpha}{2},n}*\frac{\sigma}{\sqrt{n}}<\bar{d}-\mu<t_{\frac{\alpha}{2},n}*\frac{\sigma}{\sqrt{n}})=1-\alpha$$
+$$P(-t_{\frac{\alpha}{2},n}*\frac{\sigma}{\sqrt{n}}+\mu<\bar{d}<t_{\frac{\alpha}{2},n}*\frac{\sigma}{\sqrt{n}}+\mu)=1-\alpha$$
+So,
+$$C.I. = (\mu-t_{\frac{\alpha}{2},n}*\frac{\sigma}{\sqrt{n}}<\bar{d}<\mu+t_{\frac{\alpha}{2},n}*\frac{\sigma}{\sqrt{n}})$$
+
+Plugging in the values from the example:
+$$C.I. = (.47 - 2.2281*\frac{.813}{\sqrt{10}},.47 + 2.2281*\frac{.813}{\sqrt{10}})$$
+$$C.I. = (-.1,1.04)$$
+
+
+\section{14.2.6}
+Analyze the Shoshoni rectangle data (Case Study 7.4.2) with a sign test. Let $\alpha = 0.05$. 
+
+
+\subsection*{Answer:}
+The hypotethical median should be .618 for the rectangles fo be of the golden ratio variety. 
+\begin{lstlisting}
+shoshani <- c( 0.693,0.662, 0.690, 0.606, 0.570,0.749, 0.672, 0.628, 0.609, 0.844, 0.654, 0.615, 0.668, 0.601, 0.576, 0.670, 0.606, 0.611, 0.553, 0.933)
+> med <- sum(shoshani>.618)
+> count <- length(shoshani)
+> testst <- (med-count/2)/(sqrt(20/4))
+> pval <- pnorm(testst)
+> med
+[1] 11
+> count
+[1] 20
+> testst
+[1] 0.4472136
+> pval
+[1] 0.6726396
+> \end{lstlisting}
+
+Since the p value is .67, we fail to reject $H_0$ and conclude that the the rectangles are similar to the golden ratio variety.
+\end{document}
